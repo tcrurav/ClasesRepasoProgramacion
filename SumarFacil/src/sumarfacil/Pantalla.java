@@ -35,8 +35,7 @@ public class Pantalla extends JFrame implements ActionListener{
 
     private void rellenarPantallaConElementos() {
         Container container = getContentPane();
-        
-        
+               
         JButton boton = new JButton("púlsame");
         operando1 = new JTextField();
         operando2 = new JTextField();

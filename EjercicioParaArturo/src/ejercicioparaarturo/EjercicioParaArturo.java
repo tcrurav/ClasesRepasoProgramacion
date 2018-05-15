@@ -26,7 +26,7 @@ public class EjercicioParaArturo {
 
     static ArrayList<Alumno> alumnos = new ArrayList<>();
     static ArrayList<Nota> notas = new ArrayList<>();
-    final static int TAMANO_ALUMNO = 36; // 4 + 14 * 2 + 4
+    final static int TAMANO_ALUMNO = 86; // 4 + 14 * 2 + 4 // 14 * 2 * 3 + 2 = 
     final static String FICHERO_ALUMNOS = "alumnos.txt";
     final static String FICHERO_ALUMNOS_SUSPEDIDOS = "suspendidos.txt";
     final static String FICHERO_NOTAS = "notas.txt";
@@ -53,10 +53,12 @@ public class EjercicioParaArturo {
             raf = new RandomAccessFile(fichero, "rw");
             
             for(Alumno a : alumnos){
-                raf.writeInt(a.getNumMatricula());
-                System.out.println("nombre al crearFicheroDirectoAlumnos: " + a.getNombre() + ".");
-                raf.writeChars(a.getNombre());
-                raf.writeFloat(a.getNotaMedia());
+//                raf.writeInt(a.getNumMatricula());
+//                raf.writeChars(a.getNombre());
+//                raf.writeFloat(a.getNotaMedia());
+                raf.writeChars(ajustarA14(String.valueOf(a.getNumMatricula())) + ":" +
+                               ajustarA14(a.getNombre()) + ":" +
+                               ajustarA14(String.valueOf(a.getNotaMedia())) + ":\n");
             }
             
         } catch (FileNotFoundException ex) {
@@ -70,6 +72,56 @@ public class EjercicioParaArturo {
                 Logger.getLogger(EjercicioParaArturo.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
+    }
+    
+    private static void leerFicheroDirectoAlumnos() {
+        RandomAccessFile raf = null;
+        try {
+            File fichero = new File(FICHERO_ALUMNOS);
+            raf = new RandomAccessFile(fichero, "r");
+            
+            int numMatricula;
+            String nombre;
+            byte[] b = new byte[TAMANO_NOMBRE + 3];
+            float notaMedia;
+            String linea;
+            String[] campos = new String[3];
+            while((linea = raf.readLine()) != null){
+                campos = linea.split(":");
+                System.out.println("numMatricula: " + campos[0] +
+                                   ", nombre: " + campos[1] +
+                                   ", notaMedia: " + campos[2]);
+            }
+//            while((numMatricula = raf.read()) != -1){
+//////                raf.read(b, 0, TAMANO_NOMBRE + 3);
+//////                nombre = new String(b, StandardCharsets.UTF_8);
+////                nombre = "";
+////                for(int i = 0; i < TAMANO_NOMBRE; i++){
+////                    System.out.print("" + raf.readChar());
+////                    nombre += raf.readChar();
+////                }
+//////                nombre = raf.read.readUTF();
+////                notaMedia = raf.readFloat();
+//                
+//                raf
+//
+//                System.out.println("numMatricula: " + numMatricula +
+//                                   ", nombre: " + nombre +
+//                                   ", notaMedia: " + notaMedia);
+//            }
+        } catch (FileNotFoundException ex) {
+            Logger.getLogger(EjercicioParaArturo.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (IOException ex) {
+            Logger.getLogger(EjercicioParaArturo.class.getName()).log(Level.SEVERE, null, ex);
+        } finally {
+            try {
+                raf.close();
+            } catch (IOException ex) {
+                Logger.getLogger(EjercicioParaArturo.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+        
+        
     }
 
     private static void crearArrayDeNotas() {
@@ -175,17 +227,33 @@ public class EjercicioParaArturo {
             raf = new RandomAccessFile(ficheroAlumnos, "r");
             
             raf.seek(numMatricula);
-            int numMatriculaBuscada = raf.read();
+//            int numMatriculaBuscada = raf.read();
+//            System.out.println("numMatriculaBuscada: " + numMatriculaBuscada);
+//            
+//            byte[] b = new byte[TAMANO_NOMBRE];
+//            raf.read(b, 0, TAMANO_NOMBRE);
+//            String nombre = new String(b, StandardCharsets.UTF_8);
+//            System.out.println("nombre: " + nombre);
+//            
+//            float notaMedia = raf.readFloat();
+//            System.out.println("notaMedia: " + notaMedia);
+            
+            String linea = raf.readLine();
+            System.out.println("linea: " + linea);
+            String[] campos = linea.split(":");
+            
+            int numMatriculaBuscada = Integer.valueOf(campos[0].trim());
             System.out.println("numMatriculaBuscada: " + numMatriculaBuscada);
-            
-            byte[] b = new byte[TAMANO_NOMBRE];
-            raf.read(b, 0, TAMANO_NOMBRE);
-            String nombre = new String(b, StandardCharsets.UTF_8);
+            String nombre = campos[1].trim();
             System.out.println("nombre: " + nombre);
-            
-            float notaMedia = raf.readFloat();
+//            System.out.println("campos2: " + campos[2].trim().toString());
+//            String kk = campos[2].trim().toString();
+//            kk = "5.0";
+//            System.out.println("kk: " + kk);
+//            float notaMedia = Float.parseFloat(kk);
+            float notaMedia = Float.valueOf("5.0");
             System.out.println("notaMedia: " + notaMedia);
-            
+
             alumno = new Alumno(numMatriculaBuscada, nombre, notaMedia);
             
         } catch (FileNotFoundException ex) {
@@ -276,40 +344,6 @@ public class EjercicioParaArturo {
         }
     }
 
-    private static void leerFicheroDirectoAlumnos() {
-        RandomAccessFile raf = null;
-        try {
-            File fichero = new File(FICHERO_ALUMNOS);
-            raf = new RandomAccessFile(fichero, "r");
-            
-            int numMatricula;
-            String nombre;
-            byte[] b = new byte[TAMANO_NOMBRE];
-            float notaMedia;
-            while((numMatricula = raf.read()) != -1){
-//                raf.read(b, 0, TAMANO_NOMBRE);
-                raf.readUTF();
-                nombre = new String(b, StandardCharsets.UTF_8);
-                
-                notaMedia = raf.readFloat();
-                
-                System.out.println("numMatricula: " + numMatricula +
-                                   ", nombre: " + nombre +
-                                   ", notaMedia: " + notaMedia);
-            }
-        } catch (FileNotFoundException ex) {
-            Logger.getLogger(EjercicioParaArturo.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (IOException ex) {
-            Logger.getLogger(EjercicioParaArturo.class.getName()).log(Level.SEVERE, null, ex);
-        } finally {
-            try {
-                raf.close();
-            } catch (IOException ex) {
-                Logger.getLogger(EjercicioParaArturo.class.getName()).log(Level.SEVERE, null, ex);
-            }
-        }
-        
-        
-    }
+    
     
 }
